@@ -17,16 +17,15 @@ with open(data_file,'rb') as infile:
     train_dataset = pickle.load(infile)
 X = train_dataset['X']
 y = train_dataset['y']
-
+#normalize the data
+stand_dev = np.std(X, axis=0, keepdims=True)
+mean=np.mean(X, axis=0, keepdims=True)
+X = (X-mean)/(stand_dev+1e-7)
 # reshape the X data to (num_samples, height, width, channels)
 X = X.reshape(-1, 28, 28, 1)
 
 # split the data into train and test sets
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, stratify=y)
-
-# normalize the data
-X_train = X_train.astype("float32") / 255
-X_val = X_val.astype("float32") / 255
 
 # choose 16 random indices from the train set
 indices = random.sample(range(len(X_train)), 16)
@@ -145,7 +144,7 @@ def cost_func(logits, X, y):
     for i in range(m):
         loss -= (np.log(logits2[i][y[i]]))
     return loss/m
-def train(X, y, hidden_nodes, epochs=10, lr=1):
+def train(X, y, hidden_nodes, epochs=1000, lr=1):
     """
     hidden_nodes: no. of nodes in hidden layer
     should return the updated optimize weights.
@@ -160,7 +159,7 @@ def train(X, y, hidden_nodes, epochs=10, lr=1):
         cache = forward_propg(X, parameters)[1]
         
         # print cost every 100 iterations
-        if i % 1 == 0:
+        if i % 100 == 0:
             cost = cost_func(logits, X, y)
             print("Cost at iteration {}: {}".format(i, cost))
         
