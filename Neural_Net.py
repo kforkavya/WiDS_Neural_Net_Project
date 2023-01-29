@@ -179,13 +179,16 @@ def predict(X, updated_weights):
     
     # get the index of the highest probability for each sample
     predictions = np.argmax(probabilities, axis=1)
-    print(predictions)
     return predictions
 def accuracy(predictions, y):
     """
     prints % accuracy
     """
-    accuracy = np.mean(predictions == y)
+    count=0
+    for i in range(len(predictions)):
+        if predictions[i]==y[i]:
+            count+=1
+    accuracy=count/len(predictions)
     print("Accuracy: {:.2f}%".format(accuracy * 100))
 roll_num = "22B1053" # enter ldap
 hidden_dim = 256 # replace with your own hidden dimension
